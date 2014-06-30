@@ -13,11 +13,37 @@
         android:layout_centerVertical="true"
         android:adjustViewBounds="true" />
 
-    <Button
-        android:id="@+id/button1"
+    <ImageView
+        android:id="@+id/background1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:alpha="0.3"
+        android:background="#FFFFFF" />
+
+    <ImageView
+        android:id="@+id/play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="run"
-        android:text="Run" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:src="@drawable/play" />
+
+    <LinearLayout
+        android:id="@+id/slideIndicator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingBottom="50dp" >
+
+<!--         <ImageView -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_centerHorizontal="true" -->
+<!--             android:src="@drawable/circle" /> -->
+    </LinearLayout>
 
 </RelativeLayout>

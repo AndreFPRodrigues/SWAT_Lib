@@ -92,13 +92,17 @@
             android:label="@string/title_activity_calibration" >
         </activity>
         <activity
-            android:name="swat.record.RunInteraction"
+            android:name="swat.record.Interactions"
             android:label="Run Interaction" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+         <activity
+            android:name="swat.record.RunInteraction"
+            android:label="@string/title_activity_calibration" >
         </activity>
         <activity
             android:name="mswat.core.macro.RunMacro"

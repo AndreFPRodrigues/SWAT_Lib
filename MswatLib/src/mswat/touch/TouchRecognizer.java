@@ -21,15 +21,15 @@ public abstract class TouchRecognizer extends BroadcastReceiver {
 		public final static int SPLIT_TAP = 4;
 
 		// input types
-		protected static final int ABS_MT_POSITION_X = 53;
-		protected static final int ABS_MT_POSITION_Y = 54;
-		protected static final int ABS_MT_PRESSURE = 58;
-		protected static final int ABS_MT_TOUCH_MAJOR = 48;
-		protected static final int ABS_MT_TOUCH_MINOR = 49;
-		protected static final int ABS_MT_TRACKING_ID = 57;
-		protected static final int SYN_MT_REPORT = 2;
-		protected static final int SYN_REPORT = 0;
-		protected static final int ABS_MT_SLOT = 47;
+		public static final int ABS_MT_POSITION_X = 53;
+		public static final int ABS_MT_POSITION_Y = 54;
+		public static final int ABS_MT_PRESSURE = 58;
+		public static final int ABS_MT_TOUCH_MAJOR = 48;
+		public static final int ABS_MT_TOUCH_MINOR = 49;
+		public static final int ABS_MT_TRACKING_ID = 57;
+		public static final int SYN_MT_REPORT = 2;
+		public static final int SYN_REPORT = 0;
+		public static final int ABS_MT_SLOT = 47;
 
 		// identifier variables
 		HashMap<Integer, Integer> xs = new HashMap<Integer, Integer>();

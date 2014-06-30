@@ -172,7 +172,8 @@ public class CoreController {
 	 * @return
 	 */
 	public static int registerLogger(Logger logger) {
-		loggers.add(logger);
+		if(logger!=null)
+			loggers.add(logger);
 		return loggers.size() - 1;
 	}
 

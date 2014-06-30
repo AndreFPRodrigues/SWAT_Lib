@@ -1,9 +1,12 @@
 package swat.record;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 import com.stericson.RootTools.RootTools;
@@ -36,7 +39,9 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 	private static int idScreenShot = -1;
 	private static int idScreenTouch = 0;
 	private long time;
-
+	
+	private static String filepath;
+	
 	@Override
 	public int registerIOReceiver() {
 		return CoreController.registerIOReceiver(this);
@@ -47,9 +52,10 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 			int timestamp) {
 
 		if (device == monitor) {
-			if (code == 54 && value > 750)
+			
+			if (code == 54 && value > CoreController.S_HEIGHT)
 				interaction.get(idScreenTouch).add(
-						new Touch(type, code, value - 75, timestamp));
+						new Touch(type, code, (int) (-CoreController.S_HEIGHT + 10), timestamp));
 			else
 				interaction.get(idScreenTouch).add(
 						new Touch(type, code, value, timestamp));
@@ -72,8 +78,9 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 		if (time == -1)
 			time = System.currentTimeMillis();
 		else {
-			if ((System.currentTimeMillis() - time) < 300)
+			if ((System.currentTimeMillis() - time) < 300){
 				return;
+			}
 			else
 				time = System.currentTimeMillis();
 		}
@@ -97,33 +104,33 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 
 				try {
 					Command command = new Command(0,
-							"/system/bin/screencap -p " + "/sdcard/intlog/"
+							"/system/bin/screencap -p " + filepath+"/"
 									+ idScreenShot + ".png") {
 						@Override
 						public void output(int id, String line) {
 							idScreenTouch = idScreenShot;
-							Log.d(LT, "id:" + idScreenTouch);
+							Log.d(LT, " output id:" + idScreenTouch);
 
 						}
 
 						@Override
 						public void commandCompleted(int arg0, int arg1) {
 							idScreenTouch = idScreenShot;
-							Log.d(LT, "id:" + idScreenTouch);
+							Log.d(LT, "completed id:" + idScreenTouch);
 
 						}
 
 						@Override
 						public void commandOutput(int arg0, String arg1) {
 							idScreenTouch = idScreenShot;
-							Log.d(LT, "id:" + idScreenTouch);
+							Log.d(LT, "output id:" + idScreenTouch);
 
 						}
 
 						@Override
 						public void commandTerminated(int arg0, String arg1) {
 							idScreenTouch = idScreenShot;
-							Log.d(LT, "id:" + idScreenTouch);
+							Log.d(LT, " terminated id:" + idScreenTouch);
 
 						}
 					};
@@ -150,6 +157,14 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 		if (intent.getAction().equals("swat_interaction")) {
 			boolean run = intent.getBooleanExtra("logging", false);
 			if (run) {
+				String folder = System.currentTimeMillis() + "";
+
+				 filepath = Environment.getExternalStorageDirectory().toString()
+						+ "/intlog/intrusions/" +folder;
+				
+				File f = new File (filepath);
+				f.mkdirs();
+	
 				time = -1;
 				Log.d(LT, "Recording interaction");
 				monitor = CoreController.monitorTouch();
@@ -173,8 +188,7 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 	}
 
 	private void writeLog() {
-		String filepath = Environment.getExternalStorageDirectory().toString()
-				+ "/intlog/log";
+		
 
 		Queue<Touch> touches;
 		ArrayList<String> interactions = new ArrayList<String>();
@@ -190,7 +204,7 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 			}
 		}
 		CoreController.writeToLog((ArrayList<String>) interactions.clone(),
-				filepath);
+				filepath+"/log");
 
 	}
 
