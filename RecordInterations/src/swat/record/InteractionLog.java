@@ -1,24 +1,22 @@
 package swat.record;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.exceptions.RootDeniedException;
 import com.stericson.RootTools.execution.Command;
 
-
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -39,9 +37,9 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 	private static int idScreenShot = -1;
 	private static int idScreenTouch = 0;
 	private long time;
-	
+
 	private static String filepath;
-	
+
 	@Override
 	public int registerIOReceiver() {
 		return CoreController.registerIOReceiver(this);
@@ -52,21 +50,23 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 			int timestamp) {
 
 		if (device == monitor) {
-			
+
 			if (code == 54 && value > CoreController.S_HEIGHT)
 				interaction.get(idScreenTouch).add(
-						new Touch(type, code, (int) (-CoreController.S_HEIGHT + 10), timestamp));
+						new Touch(type, code,
+								(int) (-CoreController.S_HEIGHT + 10),
+								timestamp));
 			else
 				interaction.get(idScreenTouch).add(
 						new Touch(type, code, value, timestamp));
 		}
 
-	} 
+	}
 
-	@Override 
+	@Override
 	public void onTouchReceived(int type) {
 
-	} 
+	}
 
 	@Override
 	public int registerContentReceiver() {
@@ -78,10 +78,9 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 		if (time == -1)
 			time = System.currentTimeMillis();
 		else {
-			if ((System.currentTimeMillis() - time) < 300){
+			if ((System.currentTimeMillis() - time) < 300) {
 				return;
-			}
-			else
+			} else
 				time = System.currentTimeMillis();
 		}
 		screenShot();
@@ -92,6 +91,8 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 		return DESCRIBABLE;
 	}
 
+
+
 	private void screenShot() {
 
 		idScreenShot++;
@@ -101,44 +102,41 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 
 				if (RootTools.isAccessGiven()) { /* magic root code here */
 				}
-
 				try {
-					Command command = new Command(0,
-							"/system/bin/screencap -p " + filepath+"/"
-									+ idScreenShot + ".png") {
-						@Override
-						public void output(int id, String line) {
-							idScreenTouch = idScreenShot;
-							Log.d(LT, " output id:" + idScreenTouch);
+					if (idScreenShot != -1) {
+					
+						Command command = new Command(0,
+								"/system/bin/screencap -p " + filepath + "/"
+										+ idScreenShot + ".png") {
+							@Override
+							public void output(int id, String line) {
 
-						}
+							}
 
-						@Override
-						public void commandCompleted(int arg0, int arg1) {
-							idScreenTouch = idScreenShot;
-							Log.d(LT, "completed id:" + idScreenTouch);
+							@Override
+							public void commandCompleted(int arg0, int arg1) {
+								idScreenTouch = idScreenShot;
+								Log.d(LT, "completed id:" + idScreenTouch);
 
-						}
+							}
 
-						@Override
-						public void commandOutput(int arg0, String arg1) {
-							idScreenTouch = idScreenShot;
-							Log.d(LT, "output id:" + idScreenTouch);
+							@Override
+							public void commandOutput(int arg0, String arg1) {
 
-						}
+							}
 
-						@Override
-						public void commandTerminated(int arg0, String arg1) {
-							idScreenTouch = idScreenShot;
-							Log.d(LT, " terminated id:" + idScreenTouch);
+							@Override
+							public void commandTerminated(int arg0, String arg1) {
+								idScreenTouch = idScreenShot;
+								Log.d(LT, " terminated id:" + idScreenTouch);
 
-						}
-					};
-					RootTools.getShell(true).add(command);
-
+							}
+						};
+						RootTools.getShell(true).add(command);
+					}
 				} catch (IOException e) {
 					// something went wrong, deal with it here
-				}  
+				}
 
 				catch (TimeoutException e) {
 					// TODO Auto-generated catch block
@@ -159,12 +157,12 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 			if (run) {
 				String folder = System.currentTimeMillis() + "";
 
-				 filepath = Environment.getExternalStorageDirectory().toString()
-						+ "/intlog/intrusions/" +folder;
-				
-				File f = new File (filepath);
+				filepath = Environment.getExternalStorageDirectory().toString()
+						+ "/intlog/intrusions/" + folder;
+
+				File f = new File(filepath);
 				f.mkdirs();
-	
+
 				time = -1;
 				Log.d(LT, "Recording interaction");
 				monitor = CoreController.monitorTouch();
@@ -180,6 +178,8 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 				writeLog();
 				CoreController.unregisterIOReceiver(id_io);
 				CoreController.unregisterContent(id_content);
+				idScreenShot = -1;
+				idScreenTouch = 0;
 
 			}
 
@@ -188,7 +188,6 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 	}
 
 	private void writeLog() {
-		
 
 		Queue<Touch> touches;
 		ArrayList<String> interactions = new ArrayList<String>();
@@ -204,7 +203,7 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 			}
 		}
 		CoreController.writeToLog((ArrayList<String>) interactions.clone(),
-				filepath+"/log");
+				filepath + "/log");
 
 	}
 

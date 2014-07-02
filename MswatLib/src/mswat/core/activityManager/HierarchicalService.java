@@ -189,14 +189,14 @@ public class HierarchicalService extends AccessibilityService {
 				}
 
 				if (checkUpdate()) {
-					Log.d(LT, "Updated Tree");
+					//Log.d(LT, "Updated Tree");
 					nlc.updateList(nodeList);
 					if (broadcastContent)
 						CoreController.nodeMessages(nodeList.toString());
 
 					// Send content update to the receivers
 					CoreController.updateContentReceivers(nodeList);
-					printViewItens((ArrayList<Node>) nodeList.clone()); 
+					//printViewItens((ArrayList<Node>) nodeList.clone()); 
 
 					// Macro step
 					if (runningMacro

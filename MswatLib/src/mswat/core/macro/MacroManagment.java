@@ -47,7 +47,6 @@ public class MacroManagment {
 
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
-				Log.d(LT, "line:" + line);
 				String split[] = line.split(";");
 				if (split.length > 1) {
 					String splitModes[] = split[1].split(Pattern.quote("!*!"));
@@ -60,18 +59,15 @@ public class MacroManagment {
 							String[] splitCommands = com.split(",");
 							for (String com1 : splitCommands) {
 								if (com1.length() > 0) {
-									Log.d(LT, "Add command:" + com1 + " size:"
-											+ com1.length());
+									
 
 									commands.add(com1);
 								}
 							}
 						} else {
 							commands.add(com);
-							Log.d(LT, "Add command:" + com);
 						}
 						commands.add("!*!");
-						Log.d(LT, "Add command:" + "!*!");
 
 						mode++;
 					}
@@ -87,7 +83,6 @@ public class MacroManagment {
 	}
 
 	public void createMacro(String name) {
-		Log.d(LT, "new macro");
 		currentMacro = new ArrayList<String>();
 		currentName = name;
 	}
@@ -100,7 +95,6 @@ public class MacroManagment {
 						.equals("Ok"))) && ((ls - lastStep) > 500))) {
 			lastStep = ls;
 
-			Log.d(LT, "macro:" + step);
  
 			return currentMacro.add(step); 
 		}
@@ -146,7 +140,6 @@ public class MacroManagment {
 		ArrayList<String> cm = macros.get(macro);
 		Stack<String> st = new Stack<String>();
 		for (String s : cm) {
-			Log.d(LT, "added to command: " + s);
 			st.add(0, s);
 		}
 		return st;

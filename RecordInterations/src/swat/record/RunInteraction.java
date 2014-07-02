@@ -6,11 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
-import java.util.Stack;
-import java.util.regex.Pattern;
 
 import mswat.core.CoreController;
-import mswat.core.feedback.FeedBack;
 import mswat.core.macro.Touch;
 import mswat.touch.TouchRecognizer;
 
@@ -18,13 +15,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
-import android.provider.Settings;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,9 +27,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.drawable.Drawable.Callback;
 
-import android.text.Editable;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -46,15 +37,12 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
-import android.view.WindowManager;
+
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 public class RunInteraction extends Activity {
 	private final static String LT = "interactionLog";
@@ -180,7 +168,6 @@ public class RunInteraction extends Activity {
 			}
 
 			public void onSingleTap() {
-				Log.d(LT, "single tap play/stop");
 				if (!play) {
 					nav_command = PLAY_ALL;
 					runImage(currentImage, -1);
@@ -263,7 +250,6 @@ public class RunInteraction extends Activity {
 	// }
 
 	private void addSwipeClue() {
-		Log.d(LT, "Added clue");
 		ImageView dot = new ImageView(getApplicationContext());
 		if (swipeClues.size() != 0)
 			dot.setImageResource(R.drawable.circle);
@@ -314,7 +300,6 @@ public class RunInteraction extends Activity {
 	}
 
 	public void reset(boolean image) {
-		
 
 		reseting = true;
 		if (image) {
@@ -403,14 +388,16 @@ public class RunInteraction extends Activity {
 				}
 
 			} else {
-				if(msg.what == RESET){
-					swipeClues.get(swipeIndex).setImageResource(R.drawable.circle);
+				if (msg.what == RESET) {
+					swipeClues.get(swipeIndex).setImageResource(
+							R.drawable.circle);
 					swipeIndex = 0;
-					swipeClues.get(swipeIndex).setImageResource(R.drawable.circle_selected);
+					swipeClues.get(swipeIndex).setImageResource(
+							R.drawable.circle_selected);
 					playImg.setVisibility(View.VISIBLE);
 					slideIndicator.setVisibility(View.VISIBLE);
 					background.setVisibility(View.VISIBLE);
-					play=false;
+					play = false;
 				}
 
 				Bitmap bm = BitmapFactory.decodeFile(imgBasePath
@@ -461,15 +448,15 @@ public class RunInteraction extends Activity {
 			if (surfaceHolder.getSurface().isValid()) {
 				Canvas canvas = surfaceHolder.lockCanvas();
 				canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
-				Log.d(LT, "y:" + y );
-				if(y<0){
-					canvas.drawCircle(x, CoreController
-							.yToScreenCoord(-y), 16, paintBlack);
-					canvas.drawCircle(x, CoreController
-							.yToScreenCoord(-y), 13, paintRed);
-				}else{
+
+				if (y < 0) {
+					y = CoreController.yToScreenCoord(-y);
 					canvas.drawCircle(x, y, 16, paintBlack);
-				canvas.drawCircle(x, y, 13, paint);
+					canvas.drawCircle(x, y, 13, paintRed);
+				} else {
+					y = CoreController.yToScreenCoord(y);
+					canvas.drawCircle(x, y, 16, paintBlack);
+					canvas.drawCircle(x, y, 13, paint);
 				}
 				surfaceHolder.unlockCanvasAndPost(canvas);
 			}
