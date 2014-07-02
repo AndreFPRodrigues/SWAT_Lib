@@ -330,7 +330,7 @@ public class RunInteraction extends Activity {
 			public void run() {
 
 				try {
-
+  
 					// sleep(500);
 
 					if (q != null) {
@@ -460,7 +460,7 @@ public class RunInteraction extends Activity {
 				}
 				surfaceHolder.unlockCanvasAndPost(canvas);
 			}
-
+   
 			return false;
 		}
 
