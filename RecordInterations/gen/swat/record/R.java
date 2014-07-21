@@ -71,19 +71,21 @@ public final class R {
         public static final int TextViewX=0x7f0b001f;
         public static final int TextViewY=0x7f0b0020;
         public static final int TextViewZ=0x7f0b0021;
-        public static final int action_settings=0x7f0b0029;
+        public static final int action_settings=0x7f0b002b;
         public static final int background=0x7f0b0023;
         public static final int background1=0x7f0b0026;
         public static final int button1=0x7f0b0004;
         public static final int button2=0x7f0b0005;
         public static final int container=0x7f0b0003;
         public static final int imageButton1=0x7f0b0001;
+        public static final int imageView1=0x7f0b002a;
         public static final int listInteractions=0x7f0b0024;
         public static final int listview=0x7f0b0002;
         public static final int play=0x7f0b0027;
         public static final int screenshot=0x7f0b0025;
         public static final int slideIndicator=0x7f0b0028;
         public static final int textView1=0x7f0b0000;
+        public static final int timer=0x7f0b0029;
     }
     public static final class layout {
         public static final int activity_calibration=0x7f030000;

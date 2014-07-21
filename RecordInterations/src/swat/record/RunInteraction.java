@@ -42,7 +42,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
+import android.widget.TextView;
 
 public class RunInteraction extends Activity {
 	private final static String LT = "interactionLog";
@@ -78,6 +78,31 @@ public class RunInteraction extends Activity {
 	private boolean reseting;
 	private DrawingView dv;
 
+	private final int interval = 1000; // 1 Second
+	private int time = -1;
+	private int totalTime = -1;
+
+	private Handler handlerTimer = new Handler();
+	private Runnable runnable = new Runnable() {
+		public void run() {
+			TextView t = (TextView) findViewById(R.id.timer);
+			time--;
+			t.setText((totalTime-time) + "/"+ totalTime + "s");
+			Log.d(LT, "i set:" +time);
+			if (time >= 0) {
+				handler.postDelayed(runnable, interval);
+
+			} else {
+				t.setText("");
+
+			}
+
+		}
+	};
+
+	// timestamp of last interaction
+	double lastTouchTime;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -97,7 +122,7 @@ public class RunInteraction extends Activity {
 		dv.setZOrderOnTop(true);
 
 		setContentView(R.layout.run_interaction);
-		getWindow().addContentView(
+		getWindow().addContentView( 
 				dv,
 				new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
 						ViewGroup.LayoutParams.FILL_PARENT));
@@ -235,7 +260,9 @@ public class RunInteraction extends Activity {
 								Integer.parseInt(split[3]), Double
 										.parseDouble(split[4])));
 				}
+				lastTouchTime = Double.parseDouble(split[4]);
 			}
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -289,9 +316,20 @@ public class RunInteraction extends Activity {
 			}
 		case PLAY:
 		case PLAY_ALL:
+			if (interaction.get(index) !=null && interaction.get(index).peek() != null && time <=-1) {
+				time = (int) ((lastTouchTime / 1000) - (interaction.get(index)
+						.peek().getTimestamp() / 1000));
+				totalTime = time;
+				handlerTimer.postDelayed(runnable, interval);
+				Log.d("RESCUE", "index:"+index +" init:"
+						+ (interaction.get(index).peek().getTimestamp() / 1000)
+						+ " end:" + (lastTouchTime / 1000));
+			}
 			play(index, lastTime);
+
 			break;
 		case STOP:
+			time = -1;
 			reset(true);
 			break;
 		}
@@ -330,7 +368,7 @@ public class RunInteraction extends Activity {
 			public void run() {
 
 				try {
-  
+
 					// sleep(500);
 
 					if (q != null) {
@@ -345,7 +383,9 @@ public class RunInteraction extends Activity {
 							}
 							delay = (long) t.getTimestamp();
 							if (t.getCode() == TouchRecognizer.ABS_MT_POSITION_X) {
-								x = CoreController.xToScreenCoord(t.getValue());
+								// x =
+								// CoreController.xToScreenCoord(t.getValue());
+								x = t.getValue();
 							} else {
 								if (t.getCode() == TouchRecognizer.ABS_MT_POSITION_Y) {
 									dv.onTouch(x, t.getValue());
@@ -450,17 +490,18 @@ public class RunInteraction extends Activity {
 				canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
 
 				if (y < 0) {
-					y = CoreController.yToScreenCoord(-y);
+					// y = CoreController.yToScreenCoord(-y);
+					y = -y;
 					canvas.drawCircle(x, y, 16, paintBlack);
 					canvas.drawCircle(x, y, 13, paintRed);
 				} else {
-					y = CoreController.yToScreenCoord(y);
+					// y = CoreController.yToScreenCoord(y);
 					canvas.drawCircle(x, y, 16, paintBlack);
 					canvas.drawCircle(x, y, 13, paint);
 				}
 				surfaceHolder.unlockCanvasAndPost(canvas);
 			}
-   
+
 			return false;
 		}
 

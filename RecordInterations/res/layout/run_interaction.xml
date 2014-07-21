@@ -39,11 +39,32 @@
         android:orientation="horizontal"
         android:paddingBottom="50dp" >
 
-<!--         <ImageView -->
-<!--             android:layout_width="wrap_content" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:layout_centerHorizontal="true" -->
-<!--             android:src="@drawable/circle" /> -->
+        <!-- <ImageView -->
+        <!-- android:layout_width="wrap_content" -->
+        <!-- android:layout_height="wrap_content" -->
+        <!-- android:layout_centerHorizontal="true" -->
+        <!-- android:src="@drawable/circle" /> -->
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/timer"
+         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingBottom="50dp"
+        android:text="hey" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="#FFFFFF"
+        android:src="@android:drawable/alert_light_frame" />
 
 </RelativeLayout>

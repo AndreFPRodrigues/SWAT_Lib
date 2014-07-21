@@ -1,30 +1,27 @@
 package swat.record;
 
 import java.io.File;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeoutException;
 
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.exceptions.RootDeniedException;
-import com.stericson.RootTools.execution.Command;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Environment;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.SparseArray;
-
 import mswat.core.CoreController;
 import mswat.core.activityManager.Node;
 import mswat.core.macro.Touch;
 import mswat.interfaces.ContentReceiver;
 import mswat.interfaces.IOReceiver;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Environment;
+import android.util.Log;
+import android.util.SparseArray;
+
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.exceptions.RootDeniedException;
+import com.stericson.RootTools.execution.Command;
 
 public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 		ContentReceiver {
@@ -39,6 +36,8 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 	private long time;
 
 	private static String filepath;
+	
+	private boolean recording;
 
 	@Override
 	public int registerIOReceiver() {
@@ -155,7 +154,8 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 		if (intent.getAction().equals("swat_interaction")) {
 			boolean run = intent.getBooleanExtra("logging", false);
 			if (run) {
-				String folder = System.currentTimeMillis() + "";
+				recording=true;
+				String folder = intent.getStringExtra("timestamp") + "";
 
 				filepath = Environment.getExternalStorageDirectory().toString()
 						+ "/intlog/intrusions/" + folder;
@@ -183,6 +183,16 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 
 			}
 
+		}else{
+			if(recording){
+				Log.d(LT, "Stoped recording");
+				writeLog();
+				CoreController.unregisterIOReceiver(id_io);
+				CoreController.unregisterContent(id_content);
+				idScreenShot = -1;
+				idScreenTouch = 0;
+			}
+				
 		}
 
 	}

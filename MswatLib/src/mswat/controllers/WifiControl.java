@@ -165,6 +165,8 @@ public class WifiControl extends ControlInterface {
 				break;
 			case TOUCH:
 				int type = Integer.parseInt(split[1]);
+				Log.d(LT, "Client Says: " +type+ "\n");
+
 				CoreController.sendTouchIOReceivers(type);
 				break;
 			case AUTO_HIGHLIGHT:

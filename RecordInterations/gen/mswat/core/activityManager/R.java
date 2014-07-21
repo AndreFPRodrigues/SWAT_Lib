@@ -53,7 +53,7 @@ public final class R {
 		public static final int TextViewX = 0x7f0b001f;
 		public static final int TextViewY = 0x7f0b0020;
 		public static final int TextViewZ = 0x7f0b0021;
-		public static final int action_settings = 0x7f0b0029;
+		public static final int action_settings = 0x7f0b002b;
 		public static final int button1 = 0x7f0b0004;
 		public static final int imageButton1 = 0x7f0b0001;
 		public static final int listview = 0x7f0b0002;

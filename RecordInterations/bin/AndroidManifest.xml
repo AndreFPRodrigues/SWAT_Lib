@@ -21,7 +21,6 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -55,10 +54,9 @@
             android:enabled="true" >
             <intent-filter>
                 <action android:name="swat_interaction" />
+                <action android:name="android.intent.action.SCREEN_OFF" />
             </intent-filter>
         </receiver>
-
-     
         <receiver
             android:name="mswat.touch.TPRTab2"
             android:enabled="true" >
@@ -83,6 +81,16 @@
                 <action android:name="mswat_stop" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name="swat.record.MainActivity"
+            android:label="@string/title_activity_calibration" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="mswat.core.calibration.CalibrationActivity"
             android:label="@string/title_activity_calibration" >
@@ -92,35 +100,9 @@
             android:label="@string/title_activity_calibration" >
         </activity>
         <activity
-            android:name="swat.record.Interactions"
-            android:label="Run Interaction" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-         <activity
             android:name="swat.record.RunInteraction"
+            android:exported="true"
             android:label="@string/title_activity_calibration" >
-        </activity>
-        <activity
-            android:name="mswat.core.macro.RunMacro"
-            android:label="MacroSwat" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="swat.record.MainActivity"
-            android:label="@string/title_activity_main" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
