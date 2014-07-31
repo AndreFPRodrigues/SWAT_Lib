@@ -155,7 +155,7 @@ public class InteractionLog extends BroadcastReceiver implements IOReceiver,
 			boolean run = intent.getBooleanExtra("logging", false);
 			if (run) {
 				recording=true;
-				String folder = intent.getStringExtra("timestamp") + "";
+				String folder = intent.getLongExtra("timestamp",0) + "";
 
 				filepath = Environment.getExternalStorageDirectory().toString()
 						+ "/intlog/intrusions/" + folder;

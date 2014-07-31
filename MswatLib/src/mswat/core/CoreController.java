@@ -172,7 +172,7 @@ public class CoreController {
 	 * @return
 	 */
 	public static int registerLogger(Logger logger) {
-		if(logger!=null)
+		if (logger != null)
 			loggers.add(logger);
 		return loggers.size() - 1;
 	}
@@ -214,7 +214,7 @@ public class CoreController {
 		int size = ioReceivers.size();
 
 		for (int i = 0; i < size; i++) {
-			
+
 			if (ioReceivers.get(i) != null)
 				ioReceivers.get(i).onUpdateIO(device, type, code, value,
 						timestamp);
@@ -224,8 +224,8 @@ public class CoreController {
 	public static void sendTouchIOReceivers(int type) {
 		int size = ioReceivers.size();
 		for (int i = 0; i < size; i++) {
-
-			ioReceivers.get(i).onTouchReceived(type);
+			if (ioReceivers.get(i) != null)
+				ioReceivers.get(i).onTouchReceived(type);
 		}
 	}
 
@@ -402,8 +402,8 @@ public class CoreController {
 		contentReceivers.add(contentReceiver);
 		return contentReceivers.size() - 1;
 	}
-	
-	public static void unregisterContent(int index){
+
+	public static void unregisterContent(int index) {
 		contentReceivers.remove(index);
 
 	}
@@ -977,7 +977,7 @@ public class CoreController {
 
 	public static void writeToLog(ArrayList<String> toLog, String filepath) {
 		if (loggers.size() > 0) {
-			Log.d(LT, "Writing to log:"  + filepath);
+			Log.d(LT, "Writing to log:" + filepath);
 			loggers.get(0).registerToLog(toLog, filepath);
 		}
 

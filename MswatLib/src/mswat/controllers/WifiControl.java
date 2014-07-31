@@ -147,6 +147,11 @@ public class WifiControl extends ControlInterface {
 				mode = BACK;
 			else if (split[0].equals("clickAt"))
 				mode = CLICK;
+			else if (split[0].equals("start"))
+				CoreController.sendTouchIOReceivers(0);
+			else if (split[0].equals("stop"))
+				CoreController.sendTouchIOReceivers(1);
+
 			switch (mode) {
 			case NAV_NEXT:
 				navNext();

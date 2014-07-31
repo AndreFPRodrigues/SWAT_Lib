@@ -37,7 +37,7 @@ public class Monitor {
 
 	private static boolean calibrating = false;
 
-	/**
+	/**  
 	 * Initialises list of devices Initialises Logger if logging is true
 	 * 
 	 * @param touchIndex2

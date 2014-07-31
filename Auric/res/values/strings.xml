@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AURIC</string>
+    <string name="action_settings">Settings</string>
+    <string name="configurations">Settings</string>
+    <string name="logs">Logs</string>
+    <string name="intrusions">Intrusions</string>
+    <string name="picture">Captured Pictures</string>
+    <string name="empty"></string>
+    <string name="mypicture">My Picture</string>
+    <string name="otherpicture">Other Picture</string>
+    <string name="change">Change</string>
+    <string name="replay">Replay</string>
+    <string name="menu">Menu</string>
+    <string name="modoswitch">Original Mode</string>
+    <string name="none">None</string>
+    <string name="original_mode">Original Mode</string>
+    <string name="lab_test">Laboratory Test Mode</string>
+    <string name="mode">AURIC Mode</string>
+    <string name="save">Save</string>
+
+    <string-array name="mode_array">
+        <item>None</item>
+        <item>Laboratory Test Mode</item>
+        <item>Original Mode</item>
+    </string-array>
+
+</resources>
