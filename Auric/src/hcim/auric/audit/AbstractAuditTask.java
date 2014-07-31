@@ -23,7 +23,7 @@ public abstract class AbstractAuditTask extends Thread {
 	protected IntrusionNotifier notifier;
 	protected LinkedBlockingQueue<TaskMessage> queue;
 	protected IntrusionsDatabase intrusionsDB;
-	protected Context context;
+	protected Context context; 
  
 	protected boolean screenOff;
 
