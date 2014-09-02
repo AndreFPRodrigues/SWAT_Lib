@@ -35,6 +35,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract.CommonDataKinds.Note;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.util.Log;
@@ -57,7 +58,7 @@ public class HierarchicalService extends AccessibilityService {
 	// list with the current screen nodes
 	private ArrayList<Node> nodeList = new ArrayList<Node>();
 	private ArrayList<Node> checkList = new ArrayList<Node>();
- 
+
 	private EditText editText;
 
 	// node that represents the possibility of sliding
@@ -84,9 +85,15 @@ public class HierarchicalService extends AccessibilityService {
 	private Stack<String> command;
 	private final int THRESHOLD_GUARD = 50;
 	private int runMacroMode = MacroManagment.NAV_MACRO;
-	
-	
+
 	private static int idScreenShot = 0;
+
+	// test
+	private boolean isClick = false;
+
+	// notification on
+	boolean noteCheck = false;
+	boolean contentCheck = false;
 
 	/**
 	 * Triggers whenever happens an event (changeWindow, focus, slide) Updates
@@ -94,22 +101,29 @@ public class HierarchicalService extends AccessibilityService {
 	 */
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
-//		idScreenShot++;
-//		screenShot();
-//		Log.d(LT, "ScreenShot" + idScreenShot);
+		// idScreenShot++;
+		// screenShot();
+		// Log.d(LT, "ScreenShot" + idScreenShot);
 
-		/*Log.d(LT, "----------------------------------------------");
-		Log.d(LT, "event: " + event.toString());*/
-	
-		if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED)
-			CoreController.updateNotificationReceivers("" + event.getText());
-		else {
-			// Log.d(LT, event.getEventType() + "");
+		/*
+		 * Log.d(LT, "----------------------------------------------");
+		 * Log.d(LT, "event: " + event.toString());
+		 */
+		isClick = false;
 
+		CoreController.updateEventReceivers(event);
+
+		if (CoreController.noteReceiversSize() > 0 && noteCheck)
+			if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
+				CoreController
+						.updateNotificationReceivers("" + event.getText());
+				return;
+			}
+
+		if (contentCheck && CoreController.contentReceiversSize() > 0) {
 			if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_CLICKED) {
-				
+				isClick = true;
 
-				
 				if (event.getClassName().toString().contains("EditText")
 						|| event.getClassName().toString()
 								.contains("MultiAutoCompleteTextView")) {
@@ -126,8 +140,9 @@ public class HierarchicalService extends AccessibilityService {
 					return;
 				}
 				/*
-				Log.d(LT, "source: " + source.toString());
-				Log.d(LT, "----------------------------------------------");*/
+				 * Log.d(LT, "source: " + source.toString()); Log.d(LT,
+				 * "----------------------------------------------");
+				 */
 
 				source = getRootParent(source);
 				if (source == null) {
@@ -135,9 +150,10 @@ public class HierarchicalService extends AccessibilityService {
 				}
 				currentParent = source;
 				/*
-				Log.d(LT, "parent: " + source.toString());
-				Log.d(LT, "----------------------------------------------");*/
-				
+				 * Log.d(LT, "parent: " + source.toString()); Log.d(LT,
+				 * "----------------------------------------------");
+				 */
+
 				// register keystrokes
 				if (AccessibilityEvent.eventTypeToString(event.getEventType())
 						.contains("TEXT")) {
@@ -145,7 +161,7 @@ public class HierarchicalService extends AccessibilityService {
 						if (event.getRemovedCount() > event.getAddedCount())
 							monitor.registerKeystroke("BackSpace");
 						else {
- 
+
 							if (event.getRemovedCount() != event
 									.getAddedCount()) {
 								// When the before text is a space it needs this
@@ -189,14 +205,22 @@ public class HierarchicalService extends AccessibilityService {
 				}
 
 				if (checkUpdate()) {
-					//Log.d(LT, "Updated Tree");
+					//
 					nlc.updateList(nodeList);
 					if (broadcastContent)
 						CoreController.nodeMessages(nodeList.toString());
 
 					// Send content update to the receivers
 					CoreController.updateContentReceivers(nodeList);
-					//printViewItens((ArrayList<Node>) nodeList.clone()); 
+
+					if (isClick)
+						Log.d(LT,
+								"---------CLICKEDDDDDDDDDDDDDDDDDDDD---------------");
+					else
+						Log.d(LT,
+								"------------NOOOOOOOOOOOOOO-------------------");
+
+					printViewItens((ArrayList<Node>) nodeList.clone());
 
 					// Macro step
 					if (runningMacro
@@ -206,39 +230,40 @@ public class HierarchicalService extends AccessibilityService {
 
 			}
 		}
+
 	}
 
-static	Process  sh;
-static	boolean firstTime =true;
-	static OutputStream  os ;
+	static Process sh;
+	static boolean firstTime = true;
+	static OutputStream os;
 
 	private void screenShot() {
-		
+
 		Log.d(LT, "ScreenShot:" + idScreenShot);
 
-		
-		
 		try {
-			if(firstTime){
-				sh = Runtime.getRuntime().exec("su", null,null);;
-				firstTime=true;
-				}
+			if (firstTime) {
+				sh = Runtime.getRuntime().exec("su", null, null);
+				;
+				firstTime = true;
+			}
 			Log.d(LT, "Screenshoted *: " + idScreenShot);
 
-			os= sh.getOutputStream();
+			os = sh.getOutputStream();
 			Log.d(LT, "Screenshoted **: " + idScreenShot);
 
-			os.write(("/system/bin/screencap -p " + "/sdcard/img"+idScreenShot+".png").getBytes("ASCII"));
+			os.write(("/system/bin/screencap -p " + "/sdcard/img"
+					+ idScreenShot + ".png").getBytes("ASCII"));
 			os.flush();
 			os.close();
 			Log.d(LT, "Screenshoted");
 
-			//sh.waitFor();
+			// sh.waitFor();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-		
+		}
+
 	}
 
 	/**
@@ -355,7 +380,8 @@ static	boolean firstTime =true;
 		if (size > 0)
 			for (int i = 0; i < size; i++) {
 				Log.d(LT, listCurrentNodes.get(i).toString());
-				//Log.d(LT, listCurrentNodes.get(i).getAccessNode().toString());
+				// Log.d(LT,
+				// listCurrentNodes.get(i).getAccessNode().toString());
 			}
 
 	}
@@ -389,7 +415,7 @@ static	boolean firstTime =true;
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	public void onServiceConnected() {
-		
+
 		getServiceInfo().flags = AccessibilityServiceInfo.FLAG_REQUEST_TOUCH_EXPLORATION_MODE;
 		// getServiceInfo().flags =
 		// AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
@@ -622,26 +648,23 @@ static	boolean firstTime =true;
 	private void handleMacroCreation(AccessibilityEvent event) {
 
 		AccessibilityNodeInfo src = event.getSource();
-		//Log.d(LT, "handling macro: " +src.toString());
-		
-		
-		/*if (src != null) {
-			for(int i=0; i<nodeList.size();i++){
-				Node n=nodeList.get(i);
-				if(src.hashCode()== n.getAccessNode().hashCode())
-					CoreController.addMacroStep(n.getName());
-						Log.d(LT,"ESTE E IGUAL");
-	
-			}
-		}*/
-		
+		// Log.d(LT, "handling macro: " +src.toString());
+
+		/*
+		 * if (src != null) { for(int i=0; i<nodeList.size();i++){ Node
+		 * n=nodeList.get(i); if(src.hashCode()== n.getAccessNode().hashCode())
+		 * CoreController.addMacroStep(n.getName()); Log.d(LT,"ESTE E IGUAL");
+		 * 
+		 * } }
+		 */
+
 		if (src != null) {
 			String text;
 			if ((text = getText(src)) != null)
 				CoreController.addMacroStep(text);
 			else {
 				int numchilds = src.getChildCount();
-				Log.d(LT,"s childs: " + numchilds);
+				Log.d(LT, "s childs: " + numchilds);
 				for (int i = 0; i < numchilds; i++) {
 					if ((text = getText(src.getChild(i))) != null) {
 						CoreController.addMacroStep(text);
@@ -650,7 +673,7 @@ static	boolean firstTime =true;
 				}
 				src = src.getParent();
 				numchilds = src.getChildCount();
-				Log.d(LT,"p childs: " + numchilds);
+				Log.d(LT, "p childs: " + numchilds);
 				for (int i = 0; i < numchilds; i++) {
 					if ((text = getText(src.getChild(i))) != null) {
 						CoreController.addMacroStep(text);
@@ -667,10 +690,10 @@ static	boolean firstTime =true;
 	 * @param createMacro
 	 */
 	public void setCreateMacro(boolean createMacro) {
-		//Log.d("Macro", "set create mode:" + createMacro);
+		// Log.d("Macro", "set create mode:" + createMacro);
 		creatingMacro = createMacro;
-		if(creatingMacro)
-			setMacroMode(MacroManagment.NAV_MACRO); 
+		if (creatingMacro)
+			setMacroMode(MacroManagment.NAV_MACRO);
 
 	}
 
@@ -705,12 +728,12 @@ static	boolean firstTime =true;
 		}
 
 		String step = command.peek();
-		 Log.d("Macro", "step:" +step);
-		 //Log.d("Macro" , "size:" + step.length());
-		 if(step.length()==0){ 
-			 command.pop();
-			 return ;
-		 }
+		Log.d("Macro", "step:" + step);
+		// Log.d("Macro" , "size:" + step.length());
+		if (step.length() == 0) {
+			command.pop();
+			return;
+		}
 		if (step.equals("!*!")) {
 			command.pop();
 			runMacroMode = MacroManagment.TOUCH_MACRO;
@@ -754,10 +777,8 @@ static	boolean firstTime =true;
 						result = nlc.selectFocus();
 						Log.d("Macro", "clicked:" + result);
 
-
 					} while ((result == null || result.length() == 0)
 							&& failSafe < THRESHOLD_GUARD);
-
 
 					if (failSafe < THRESHOLD_GUARD) {
 						command.pop();
@@ -766,11 +787,12 @@ static	boolean firstTime =true;
 						checkStep();
 					}
 					return;
-				} 
-			}  
+				}
+			}
 			Node n;
-			if ( nodeList.size()>0 &&(n = nodeList.get(nodeList.size() - 1)).getName().equals(
-					"SCROLL")) {
+			if (nodeList.size() > 0
+					&& (n = nodeList.get(nodeList.size() - 1)).getName()
+							.equals("SCROLL")) {
 				nlc.focusIndex("SCROLL");
 				if (nlc.selectFocus() == null) {
 					nlc.selectFocus();
@@ -785,15 +807,15 @@ static	boolean firstTime =true;
 		if (command.size() == 0) {
 			runningMacro = false;
 			runMacroMode = MacroManagment.NAV_MACRO;
- 
-			return; 
 
-		} 
+			return;
+
+		}
 
 		String step = command.peek();
 		if (step.equals("!*!")) {
 			command.pop();
-			//makeStepTouch();
+			// makeStepTouch();
 			runMacroMode = MacroManagment.NAV_MACRO;
 			checkStep();
 		} else {
@@ -801,7 +823,7 @@ static	boolean firstTime =true;
 				String s = command.pop();
 				Log.d("Macro", "touch Step : " + s);
 				runTouches(s);
-				//makeStepTouch();
+				// makeStepTouch();
 			} else {
 				runMacroMode = MacroManagment.NAV_MACRO;
 				runningMacro = false;
@@ -819,28 +841,28 @@ static	boolean firstTime =true;
 					.parseInt(split[i + 1]), Integer.parseInt(split[i + 2]),
 					Double.parseDouble(split[i + 3])));
 		}
-		
+
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
-			public void run() { 
-				if (touches.size() > 0) { 
+			public void run() {
+				if (touches.size() > 0) {
 					double time = touches.get(0).getTimestamp();
 					int value;
-					//Log.d()
+					// Log.d()
 					for (Touch t : touches) {
-						value = t.getValue(); 
-						double sleep = (t.getTimestamp() - time) ; 
-						if(sleep<0)
-							sleep=0;
-						
-						SystemClock.sleep((long) (sleep ));
-					
+						value = t.getValue();
+						double sleep = (t.getTimestamp() - time);
+						if (sleep < 0)
+							sleep = 0;
+
+						SystemClock.sleep((long) (sleep));
 
 						CoreController.injectToTouch(t.getType(), t.getCode(),
 								value);
 						time = t.getTimestamp();
 					}
-					makeStepTouch();				}
+					makeStepTouch();
+				}
 			}
 		}, 2000);
 

@@ -15,6 +15,7 @@ import mswat.core.macro.MacroManagment;
 import mswat.core.macro.RunMacro;
 import mswat.core.macro.TouchMonitor;
 import mswat.interfaces.ContentReceiver;
+import mswat.interfaces.EventReceiver;
 import mswat.interfaces.IOReceiver;
 import mswat.interfaces.NotificationReceiver;
 import mswat.keyboard.SwatKeyboard;
@@ -39,6 +40,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.EditText;
 
@@ -62,6 +64,8 @@ public class CoreController {
 	private static Hashtable<Integer, IOReceiver> ioReceivers;
 	private static ArrayList<ContentReceiver> contentReceivers;
 	private static ArrayList<NotificationReceiver> notificationReceivers;
+	private static ArrayList<EventReceiver> eventReceivers;
+
 	private static ArrayList<Logger> loggers;
 
 	// active keyboard
@@ -405,22 +409,56 @@ public class CoreController {
 
 	public static void unregisterContent(int index) {
 		contentReceivers.remove(index);
-
 	}
-
+	
+	public static int contentReceiversSize(){
+		return contentReceivers.size();
+	}
+	
 	/**
 	 * Content update event propagated to content update receivers
 	 * 
 	 * @param content
 	 */
 	public static void updateContentReceivers(ArrayList<Node> content) {
-
 		int size = contentReceivers.size();
 		for (int i = 0; i < size; i++) {
-			;
 			content = prepareContent(contentReceivers.get(i).getType(), content);
 			contentReceivers.get(i).onUpdateContent(content);
 		}
+	}
+	
+	/**
+	 * Register events
+	 * @param eventReceiver
+	 * @return
+	 */
+	public static int registerEventReceiver(EventReceiver eventReceiver) {
+		eventReceivers.add(eventReceiver);
+		return eventReceivers.size() - 1;
+	}
+
+	public static void unregisterEvent(int index) {
+		eventReceivers.remove(index);
+	}
+	
+
+
+	public static void updateEventReceivers(AccessibilityEvent event) {
+		int size = eventReceivers.size();
+		for (int i = 0; i < size; i++) {
+			
+			if(checkEvent(eventReceivers.get(i).getType(), event))
+				eventReceivers.get(i).onUpdateEvent(event);
+		}
+	}
+
+	private static boolean checkEvent(int[] type, AccessibilityEvent event) {
+		for(int i=0;i<type.length;i++){
+			if(type[i]==event.getEventType())
+				return true;
+		}
+		return false;
 	}
 
 	private static ArrayList<Node> prepareContent(int contentType,
@@ -879,6 +917,10 @@ public class CoreController {
 	public static int registerNotificationReceiver(NotificationReceiver nr) {
 		notificationReceivers.add(nr);
 		return notificationReceivers.size() - 1;
+	}
+	
+	public static int noteReceiversSize(){
+		return notificationReceivers.size();
 	}
 
 	/**
