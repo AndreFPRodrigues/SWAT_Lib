@@ -186,7 +186,7 @@ public class TPRNexusS extends TouchRecognizer {
 				id_touches.clear();
 				break;
 		}
-		
+		 
 		lastEventCode = code;
 		
 		//Log.d(LT, "t:" + type + " c:" + code + " v:" + value);
@@ -197,7 +197,7 @@ public class TPRNexusS extends TouchRecognizer {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 
 
 

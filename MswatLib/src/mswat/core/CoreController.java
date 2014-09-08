@@ -132,6 +132,7 @@ public class CoreController {
 		ioReceivers = new Hashtable<Integer, IOReceiver>();
 		contentReceivers = new ArrayList<ContentReceiver>();
 		notificationReceivers = new ArrayList<NotificationReceiver>();
+		eventReceivers = new ArrayList<EventReceiver>();
 		loggers = new ArrayList<Logger>();
 
 		this.controller = controller;
@@ -456,7 +457,7 @@ public class CoreController {
 	private static boolean checkEvent(int[] type, AccessibilityEvent event) {
 		for(int i=0;i<type.length;i++){
 			if(type[i]==event.getEventType())
-				return true;
+				return true; 
 		}
 		return false;
 	}

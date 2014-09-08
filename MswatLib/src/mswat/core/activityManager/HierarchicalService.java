@@ -19,10 +19,13 @@ import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -402,11 +405,7 @@ public class HierarchicalService extends AccessibilityService {
 		this.stopSelf();
 	}
 
-	@Override
-	public boolean onKeyEvent(KeyEvent event) {
-		Log.d(LT, "got one");
-		return true;
-	}
+ 
 
 	/**
 	 * Initialise NodeListController Initialise Monitor Initialise
@@ -416,7 +415,7 @@ public class HierarchicalService extends AccessibilityService {
 	@Override
 	public void onServiceConnected() {
 
-		getServiceInfo().flags = AccessibilityServiceInfo.FLAG_REQUEST_TOUCH_EXPLORATION_MODE;
+		//getServiceInfo().flags = AccessibilityServiceInfo.FLAG_REQUEST_TOUCH_EXPLORATION_MODE;
 		// getServiceInfo().flags =
 		// AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
 
@@ -448,6 +447,8 @@ public class HierarchicalService extends AccessibilityService {
 				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 						| WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
 				PixelFormat.TRANSLUCENT);
+		
+
 
 		// shared preferences
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -529,6 +530,9 @@ public class HierarchicalService extends AccessibilityService {
 		}
 
 	}
+	
+	
+
 
 	/**
 	 * 
