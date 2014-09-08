@@ -1,6 +1,6 @@
 Mswat
 =====
-SWAT is a framework developed for android to provide developers with the tools to 
+SWAT is a library developed for android to provide developers with the tools to 
 monitor, block and inject system wide input events.
 Through the accessibility service SWAT is able to determine the current content of the screen system wide.
 It empowers developers by giving then options and info that are usually only available at a system level.
@@ -10,7 +10,7 @@ Android 4.1.2 or above for full support
 Rooted phone - necessary to monitor/inject/block input events system wide
 
 ##How does it work?
-The framework is composed by a core module that handles all the work.
+The library is composed by a core module that handles all the work.
 
 ###Core
 
@@ -143,10 +143,5 @@ TouchAdapter is an example on how to block the touch device, create a virtual to
 and forward the events from the blocked touch device to the virtual one.
 
 
-####AutoNav
-Using the framework we are building an assistive technology that is able to do a 
-column-row navigation system-wide. It provides with TTS notifications and the ability to 
-use the keyboard using only one switch. The goal of this example of use is to be able to 
-provide key features (make/receive calls, send/receive sms, clock)to a individual with multiple impairments.
 
 
